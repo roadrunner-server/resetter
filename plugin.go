@@ -1,19 +1,24 @@
 package resetter
 
 import (
-	"github.com/roadrunner-server/api/v2/plugins/resetter"
 	endure "github.com/roadrunner-server/endure/pkg/container"
 	"github.com/roadrunner-server/errors"
 )
 
 const PluginName = "resetter"
 
+// Resetter interface
+type Resetter interface {
+	// Reset reload plugin
+	Reset() error
+}
+
 type Plugin struct {
-	registry map[string]resetter.Resetter
+	registry map[string]Resetter
 }
 
 func (p *Plugin) Init() error {
-	p.registry = make(map[string]resetter.Resetter)
+	p.registry = make(map[string]Resetter)
 	return nil
 }
 
@@ -29,7 +34,7 @@ func (p *Plugin) Reset(name string) error {
 }
 
 // RegisterTarget resettable service.
-func (p *Plugin) RegisterTarget(name endure.Named, r resetter.Resetter) error {
+func (p *Plugin) RegisterTarget(name endure.Named, r Resetter) error {
 	p.registry[name.Name()] = r
 	return nil
 }
