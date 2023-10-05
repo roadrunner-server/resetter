@@ -1,2 +1,3 @@
-# resetter
-RRv2 resetter plugin
+# Resetter plugin [bundled]
+
+Responsible for resetting workers.
