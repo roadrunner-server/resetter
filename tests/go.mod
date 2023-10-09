@@ -6,7 +6,7 @@ toolchain go1.21.1
 
 require (
 	github.com/roadrunner-server/config/v4 v4.4.6
-	github.com/roadrunner-server/endure/v2 v2.4.2
+	github.com/roadrunner-server/endure/v2 v2.4.3
 	github.com/roadrunner-server/goridge/v3 v3.8.1
 	github.com/roadrunner-server/resetter/v4 v4.0.11
 	github.com/roadrunner-server/rpc/v4 v4.2.5
