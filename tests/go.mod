@@ -5,13 +5,13 @@ go 1.21
 toolchain go1.21.1
 
 require (
-	github.com/roadrunner-server/config/v4 v4.4.8
+	github.com/roadrunner-server/config/v4 v4.4.9
 	github.com/roadrunner-server/endure/v2 v2.4.3
 	github.com/roadrunner-server/goridge/v3 v3.8.1
-	github.com/roadrunner-server/resetter/v4 v4.0.13
-	github.com/roadrunner-server/rpc/v4 v4.2.7
+	github.com/roadrunner-server/resetter/v4 v4.0.14
+	github.com/roadrunner-server/rpc/v4 v4.2.8
 	github.com/roadrunner-server/sdk/v4 v4.5.3
-	github.com/roadrunner-server/server/v4 v4.4.5
+	github.com/roadrunner-server/server/v4 v4.4.6
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/zap v1.26.0
 )
@@ -23,7 +23,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
-	github.com/google/uuid v1.3.1 // indirect
+	github.com/google/uuid v1.4.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
