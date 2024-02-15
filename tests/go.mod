@@ -8,7 +8,7 @@ require (
 	github.com/roadrunner-server/config/v4 v4.6.7
 	github.com/roadrunner-server/endure/v2 v2.4.3
 	github.com/roadrunner-server/goridge/v3 v3.8.1
-	github.com/roadrunner-server/resetter/v4 v4.0.21
+	github.com/roadrunner-server/resetter/v4 v4.1.0
 	github.com/roadrunner-server/rpc/v4 v4.2.15
 	github.com/roadrunner-server/sdk/v4 v4.6.0
 	github.com/roadrunner-server/server/v4 v4.5.7
