@@ -1,6 +1,6 @@
 module github.com/roadrunner-server/resetter/v4
 
-go 1.22.3
+go 1.22.4
 
 require (
 	github.com/roadrunner-server/endure/v2 v2.4.5
