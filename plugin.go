@@ -35,7 +35,7 @@ func (p *Plugin) Reset(name string) error {
 	return svc.Reset()
 }
 
-// Collects declares services to be collected.
+// Collects declare services to be collected.
 func (p *Plugin) Collects() []*dep.In {
 	return []*dep.In{
 		dep.Fits(func(pl any) {
