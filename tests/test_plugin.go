@@ -2,7 +2,6 @@ package resetter
 
 import (
 	"context"
-	"os/exec"
 	"time"
 
 	"github.com/roadrunner-server/pool/payload"
