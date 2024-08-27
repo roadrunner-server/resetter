@@ -4,7 +4,7 @@ go 1.23.0
 
 require (
 	github.com/roadrunner-server/config/v5 v5.0.2
-	github.com/roadrunner-server/endure/v2 v2.4.6
+	github.com/roadrunner-server/endure/v2 v2.5.0
 	github.com/roadrunner-server/goridge/v3 v3.8.3
 	github.com/roadrunner-server/pool v1.0.1
 	github.com/roadrunner-server/resetter/v5 v5.0.0
@@ -26,7 +26,7 @@ require (
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
+	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/roadrunner-server/errors v1.4.1 // indirect
 	github.com/roadrunner-server/events v1.0.1 // indirect
@@ -46,7 +46,7 @@ require (
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20240808152545-0cdaa3abc0fa // indirect
+	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948 // indirect
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.24.0 // indirect
 	golang.org/x/text v0.17.0 // indirect
