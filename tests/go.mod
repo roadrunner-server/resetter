@@ -2,13 +2,13 @@ module tests
 
 go 1.23
 
-toolchain go1.23.3
+toolchain go1.23.4
 
 require (
 	github.com/roadrunner-server/config/v5 v5.0.4
 	github.com/roadrunner-server/endure/v2 v2.6.1
 	github.com/roadrunner-server/goridge/v3 v3.8.3
-	github.com/roadrunner-server/pool v1.0.3
+	github.com/roadrunner-server/pool v1.1.0
 	github.com/roadrunner-server/resetter/v5 v5.0.0
 	github.com/roadrunner-server/rpc/v5 v5.0.4
 	github.com/roadrunner-server/server/v5 v5.1.2
