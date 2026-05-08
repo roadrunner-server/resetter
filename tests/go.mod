@@ -13,7 +13,7 @@ require (
 	github.com/roadrunner-server/rpc/v5 v5.1.9
 	github.com/roadrunner-server/server/v5 v5.2.10
 	github.com/stretchr/testify v1.11.1
-	go.uber.org/zap v1.27.1
+	go.uber.org/zap v1.28.0
 )
 
 replace github.com/roadrunner-server/resetter/v6 => ../
