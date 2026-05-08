@@ -1,4 +1,4 @@
-module github.com/roadrunner-server/resetter/v5
+module github.com/roadrunner-server/resetter/v6
 
 go 1.26
 
