@@ -5,13 +5,13 @@ go 1.26
 toolchain go1.26.0
 
 require (
-	github.com/roadrunner-server/config/v5 v5.1.9
+	github.com/roadrunner-server/config/v6 v6.0.0-beta.3
 	github.com/roadrunner-server/endure/v2 v2.6.2
 	github.com/roadrunner-server/goridge/v4 v4.0.0-beta.1
 	github.com/roadrunner-server/pool/v2 v2.0.0-beta.1
 	github.com/roadrunner-server/resetter/v6 v6.0.0
-	github.com/roadrunner-server/rpc/v5 v5.1.9
-	github.com/roadrunner-server/server/v5 v5.2.10
+	github.com/roadrunner-server/rpc/v6 v6.0.0-beta.3
+	github.com/roadrunner-server/server/v6 v6.0.0-beta.5
 	github.com/stretchr/testify v1.11.1
 )
 
@@ -23,7 +23,6 @@ require (
 	github.com/fsnotify/fsnotify v1.10.1 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
-	github.com/goccy/go-json v0.10.6 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
@@ -32,8 +31,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/roadrunner-server/errors v1.5.0 // indirect
 	github.com/roadrunner-server/events v1.0.1 // indirect
-	github.com/roadrunner-server/goridge/v3 v3.8.3 // indirect
-	github.com/roadrunner-server/pool v1.1.3 // indirect
 	github.com/roadrunner-server/tcplisten v1.5.2 // indirect
 	github.com/sagikazarmark/locafero v0.12.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
@@ -44,8 +41,6 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.16 // indirect
 	github.com/tklauser/numcpus v0.11.0 // indirect
-	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
-	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.28.0 // indirect
