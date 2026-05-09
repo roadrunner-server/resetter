@@ -11,17 +11,15 @@ import (
 	"testing"
 	"time"
 
-	mocklogger "tests/mock"
-
 	"github.com/roadrunner-server/config/v5"
 	"github.com/roadrunner-server/endure/v2"
-	goridgeRpc "github.com/roadrunner-server/goridge/v3/pkg/rpc"
+	goridgeRpc "github.com/roadrunner-server/goridge/v4/pkg/rpc"
 	"github.com/roadrunner-server/resetter/v6"
 	rpcPlugin "github.com/roadrunner-server/rpc/v5"
 	"github.com/roadrunner-server/server/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
+	mocklogger "tests/mock"
 )
 
 func TestResetterInit(t *testing.T) {
@@ -32,7 +30,7 @@ func TestResetterInit(t *testing.T) {
 		Path:    ".rr-resetter.yaml",
 	}
 
-	l, oLogger := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, oLogger := mocklogger.SlogTestLogger(slog.LevelDebug)
 	err := cont.RegisterAll(
 		cfg,
 		&server.Plugin{},
