@@ -5,7 +5,6 @@ import (
 
 	"github.com/roadrunner-server/api-go/v6/resetter/v1/resetterV1connect"
 	"github.com/roadrunner-server/endure/v2/dep"
-	"github.com/roadrunner-server/errors"
 )
 
 const PluginName = "resetter"
@@ -25,17 +24,6 @@ type Plugin struct {
 func (p *Plugin) Init() error {
 	p.registry = make(map[string]Resetter)
 	return nil
-}
-
-// Reset named service.
-func (p *Plugin) Reset(name string) error {
-	const op = errors.Op("resetter_plugin_reset_by_name")
-	svc, ok := p.registry[name]
-	if !ok {
-		return errors.E(op, errors.Errorf("no such plugin: %s", name))
-	}
-
-	return svc.Reset()
 }
 
 // Collects declare services to be collected.

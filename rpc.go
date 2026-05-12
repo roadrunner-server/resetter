@@ -2,11 +2,14 @@ package resetter
 
 import (
 	"context"
+	stderr "errors"
+	"fmt"
 
 	"connectrpc.com/connect"
 	resetterV1 "github.com/roadrunner-server/api-go/v6/resetter/v1"
-	"github.com/roadrunner-server/errors"
 )
+
+var errNoSuchPlugin = stderr.New("no such plugin")
 
 type rpc struct {
 	srv *Plugin
@@ -21,9 +24,13 @@ func (r *rpc) ListPlugins(_ context.Context, _ *connect.Request[resetterV1.ListP
 }
 
 func (r *rpc) Reset(_ context.Context, req *connect.Request[resetterV1.ResetRequest]) (*connect.Response[resetterV1.Response], error) {
-	const op = errors.Op("resetter_rpc_reset")
-	if err := r.srv.Reset(req.Msg.GetPlugin()); err != nil {
-		return nil, connect.NewError(connect.CodeInternal, errors.E(op, err))
+	name := req.Msg.GetPlugin()
+	svc, ok := r.srv.registry[name]
+	if !ok {
+		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("%w: %s", errNoSuchPlugin, name))
+	}
+	if err := svc.Reset(); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 	return connect.NewResponse(&resetterV1.Response{Ok: true}), nil
 }

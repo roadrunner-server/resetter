@@ -8,7 +8,6 @@ require (
 	connectrpc.com/connect v1.19.2
 	github.com/roadrunner-server/api-go/v6 v6.0.0-beta.9
 	github.com/roadrunner-server/endure/v2 v2.6.2
-	github.com/roadrunner-server/errors v1.5.0
 )
 
 require (

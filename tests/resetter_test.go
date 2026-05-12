@@ -118,6 +118,5 @@ func resetterRPCTest(t *testing.T) {
 
 	listResp, err := client.ListPlugins(ctx, connect.NewRequest(&resetterV1.ListPluginsRequest{}))
 	assert.NoError(t, err)
-	require.NotEmpty(t, listResp.Msg.GetPlugins())
-	assert.Equal(t, "resetter.plugin1", listResp.Msg.GetPlugins()[0])
+	require.Contains(t, listResp.Msg.GetPlugins(), "resetter.plugin1")
 }

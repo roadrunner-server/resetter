@@ -102,6 +102,13 @@ func TestResetterConnectAPI(t *testing.T) {
 	resetResp, err := client.Reset(ctx, connect.NewRequest(&resetterV1.ResetRequest{Plugin: "resetter.plugin1"}))
 	require.NoError(t, err)
 	require.True(t, resetResp.Msg.GetOk())
+
+	// negative path: unknown plugin name must surface as CodeNotFound
+	// (not the default CodeInternal) so clients can distinguish bad input
+	// from real server faults.
+	_, err = client.Reset(ctx, connect.NewRequest(&resetterV1.ResetRequest{Plugin: "does-not-exist"}))
+	require.Error(t, err)
+	require.Equal(t, connect.CodeNotFound, connect.CodeOf(err))
 }
 
 // TestResetterHTTPApi exercises both RPCs through plain HTTP/1.1 with a
