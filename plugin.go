@@ -1,6 +1,9 @@
 package resetter
 
 import (
+	"net/http"
+
+	"github.com/roadrunner-server/api-go/v6/resetter/v1/resetterV1connect"
 	"github.com/roadrunner-server/endure/v2/dep"
 	"github.com/roadrunner-server/errors"
 )
@@ -50,7 +53,7 @@ func (p *Plugin) Name() string {
 	return PluginName
 }
 
-// RPC returns associated rpc service.
-func (p *Plugin) RPC() any {
-	return &rpc{srv: p}
+// RPC returns the Connect-RPC handler mount for the resetter service.
+func (p *Plugin) RPC() (string, http.Handler) {
+	return resetterV1connect.NewResetterServiceHandler(&rpc{srv: p})
 }

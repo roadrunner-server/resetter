@@ -1,9 +1,11 @@
 package resetter
 
 import (
+	"context"
+	"crypto/tls"
 	"log/slog"
 	"net"
-	"net/rpc"
+	"net/http"
 	"os"
 	"os/signal"
 	"sync"
@@ -11,15 +13,19 @@ import (
 	"testing"
 	"time"
 
+	mocklogger "tests/mock"
+
+	"connectrpc.com/connect"
+	resetterV1 "github.com/roadrunner-server/api-go/v6/resetter/v1"
+	"github.com/roadrunner-server/api-go/v6/resetter/v1/resetterV1connect"
 	"github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/endure/v2"
-	goridgeRpc "github.com/roadrunner-server/goridge/v4/pkg/rpc"
 	"github.com/roadrunner-server/resetter/v6"
 	rpcPlugin "github.com/roadrunner-server/rpc/v6"
 	"github.com/roadrunner-server/server/v6"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	mocklogger "tests/mock"
+	"golang.org/x/net/http2"
 )
 
 func TestResetterInit(t *testing.T) {
@@ -94,22 +100,24 @@ func TestResetterInit(t *testing.T) {
 }
 
 func resetterRPCTest(t *testing.T) {
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
-	assert.NoError(t, err)
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
-	// WorkerList contains a list of workers.
-
-	var ret bool
-	err = client.Call("resetter.Reset", "resetter.plugin1", &ret)
-	assert.NoError(t, err)
-	assert.True(t, ret)
-	ret = false
-
-	var services []string
-	err = client.Call("resetter.List", nil, &services)
-	assert.NotNil(t, services)
-	assert.NoError(t, err)
-	if services[0] != "resetter.plugin1" {
-		t.Fatal("no enough services")
+	httpc := &http.Client{
+		Timeout: 30 * time.Second,
+		Transport: &http2.Transport{
+			AllowHTTP: true,
+			DialTLSContext: func(ctx context.Context, network, addr string, _ *tls.Config) (net.Conn, error) {
+				return (&net.Dialer{Timeout: 30 * time.Second}).DialContext(ctx, network, addr)
+			},
+		},
 	}
+	client := resetterV1connect.NewResetterServiceClient(httpc, "http://127.0.0.1:6001")
+	ctx := t.Context()
+
+	resetResp, err := client.Reset(ctx, connect.NewRequest(&resetterV1.ResetRequest{Plugin: "resetter.plugin1"}))
+	assert.NoError(t, err)
+	assert.True(t, resetResp.Msg.GetOk())
+
+	listResp, err := client.ListPlugins(ctx, connect.NewRequest(&resetterV1.ListPluginsRequest{}))
+	assert.NoError(t, err)
+	require.NotEmpty(t, listResp.Msg.GetPlugins())
+	assert.Equal(t, "resetter.plugin1", listResp.Msg.GetPlugins()[0])
 }
