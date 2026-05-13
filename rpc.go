@@ -1,29 +1,36 @@
 package resetter
 
-import "github.com/roadrunner-server/errors"
+import (
+	"context"
+	stderr "errors"
+	"fmt"
+
+	"connectrpc.com/connect"
+	resetterV1 "github.com/roadrunner-server/api-go/v6/resetter/v1"
+)
+
+var errNoSuchPlugin = stderr.New("no such plugin")
 
 type rpc struct {
 	srv *Plugin
 }
 
-// List all resettable plugins.
-func (rpc *rpc) List(_ bool, list *[]string) error {
-	*list = make([]string, 0)
-
-	for name := range rpc.srv.registry {
-		*list = append(*list, name)
+func (r *rpc) ListPlugins(_ context.Context, _ *connect.Request[resetterV1.ListPluginsRequest]) (*connect.Response[resetterV1.PluginsList], error) {
+	plugins := make([]string, 0, len(r.srv.registry))
+	for name := range r.srv.registry {
+		plugins = append(plugins, name)
 	}
-	return nil
+	return connect.NewResponse(&resetterV1.PluginsList{Plugins: plugins}), nil
 }
 
-// Reset named plugin.
-func (rpc *rpc) Reset(service string, done *bool) error {
-	const op = errors.Op("resetter_rpc_reset")
-	err := rpc.srv.Reset(service)
-	if err != nil {
-		*done = false
-		return errors.E(op, err)
+func (r *rpc) Reset(_ context.Context, req *connect.Request[resetterV1.ResetRequest]) (*connect.Response[resetterV1.Response], error) {
+	name := req.Msg.GetPlugin()
+	svc, ok := r.srv.registry[name]
+	if !ok {
+		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("%w: %s", errNoSuchPlugin, name))
 	}
-	*done = true
-	return nil
+	if err := svc.Reset(); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+	return connect.NewResponse(&resetterV1.Response{Ok: true}), nil
 }

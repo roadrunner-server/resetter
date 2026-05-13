@@ -1,8 +1,10 @@
 package resetter
 
 import (
+	"net/http"
+
+	"github.com/roadrunner-server/api-go/v6/resetter/v1/resetterV1connect"
 	"github.com/roadrunner-server/endure/v2/dep"
-	"github.com/roadrunner-server/errors"
 )
 
 const PluginName = "resetter"
@@ -24,17 +26,6 @@ func (p *Plugin) Init() error {
 	return nil
 }
 
-// Reset named service.
-func (p *Plugin) Reset(name string) error {
-	const op = errors.Op("resetter_plugin_reset_by_name")
-	svc, ok := p.registry[name]
-	if !ok {
-		return errors.E(op, errors.Errorf("no such plugin: %s", name))
-	}
-
-	return svc.Reset()
-}
-
 // Collects declare services to be collected.
 func (p *Plugin) Collects() []*dep.In {
 	return []*dep.In{
@@ -50,7 +41,7 @@ func (p *Plugin) Name() string {
 	return PluginName
 }
 
-// RPC returns associated rpc service.
-func (p *Plugin) RPC() any {
-	return &rpc{srv: p}
+// RPC returns the Connect-RPC handler mount for the resetter service.
+func (p *Plugin) RPC() (string, http.Handler) {
+	return resetterV1connect.NewResetterServiceHandler(&rpc{srv: p})
 }
