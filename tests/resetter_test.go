@@ -61,10 +61,8 @@ func TestResetterInit(t *testing.T) {
 	stopCh := make(chan struct{}, 1)
 
 	wg := &sync.WaitGroup{}
-	wg.Add(1)
 
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		for {
 			select {
 			case e := <-ch:
@@ -88,7 +86,7 @@ func TestResetterInit(t *testing.T) {
 				return
 			}
 		}
-	}()
+	})
 
 	time.Sleep(time.Second)
 
