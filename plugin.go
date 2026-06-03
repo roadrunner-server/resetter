@@ -30,7 +30,7 @@ func (p *Plugin) Init() error {
 func (p *Plugin) Collects() []*dep.In {
 	return []*dep.In{
 		dep.Fits(func(pl any) {
-			res := pl.(Resetter)
+			res, _ := pl.(Resetter)
 			p.registry[res.Name()] = res
 		}, (*Resetter)(nil)),
 	}

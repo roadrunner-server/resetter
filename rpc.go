@@ -2,24 +2,23 @@ package resetter
 
 import (
 	"context"
-	stderr "errors"
+	"errors"
 	"fmt"
+	"maps"
+	"slices"
 
 	"connectrpc.com/connect"
 	resetterV1 "github.com/roadrunner-server/api-go/v6/resetter/v1"
 )
 
-var errNoSuchPlugin = stderr.New("no such plugin")
+var errNoSuchPlugin = errors.New("no such plugin")
 
 type rpc struct {
 	srv *Plugin
 }
 
 func (r *rpc) ListPlugins(_ context.Context, _ *connect.Request[resetterV1.ListPluginsRequest]) (*connect.Response[resetterV1.PluginsList], error) {
-	plugins := make([]string, 0, len(r.srv.registry))
-	for name := range r.srv.registry {
-		plugins = append(plugins, name)
-	}
+	plugins := slices.Collect(maps.Keys(r.srv.registry))
 	return connect.NewResponse(&resetterV1.PluginsList{Plugins: plugins}), nil
 }
 
