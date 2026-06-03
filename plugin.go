@@ -1,8 +1,6 @@
 package resetter
 
 import (
-	"fmt"
-	"log/slog"
 	"net/http"
 
 	"github.com/roadrunner-server/api-go/v6/resetter/v1/resetterV1connect"
@@ -32,11 +30,7 @@ func (p *Plugin) Init() error {
 func (p *Plugin) Collects() []*dep.In {
 	return []*dep.In{
 		dep.Fits(func(pl any) {
-			res, ok := pl.(Resetter)
-			if !ok {
-				slog.Warn("plugin does not implement Resetter interface, skipping", slog.String("type", fmt.Sprintf("%T", pl)))
-				return
-			}
+			res, _ := pl.(Resetter)
 			p.registry[res.Name()] = res
 		}, (*Resetter)(nil)),
 	}
