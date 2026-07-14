@@ -104,6 +104,12 @@ func resetterRPCTest(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, resetResp.GetOk())
 
+	// negative path: unknown plugin name must surface as an error over goridge net/rpc
+	var missingResp resetterV1.Response
+	err = client.Call("resetter.Reset", &resetterV1.ResetRequest{Plugin: "resetter.unknown"}, &missingResp)
+	require.ErrorContains(t, err, "no such plugin")
+	assert.False(t, missingResp.GetOk())
+
 	var listResp resetterV1.PluginsList
 	err = client.Call("resetter.ListPlugins", &resetterV1.ListPluginsRequest{}, &listResp)
 	assert.NoError(t, err)
