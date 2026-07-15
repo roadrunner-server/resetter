@@ -1,11 +1,9 @@
 package resetter
 
 import (
-	"context"
-	"crypto/tls"
 	"log/slog"
 	"net"
-	"net/http"
+	"net/rpc"
 	"os"
 	"os/signal"
 	"sync"
@@ -15,17 +13,15 @@ import (
 
 	mocklogger "tests/mock"
 
-	"connectrpc.com/connect"
 	resetterV1 "github.com/roadrunner-server/api-go/v6/resetter/v1"
-	"github.com/roadrunner-server/api-go/v6/resetter/v1/resetterV1connect"
 	"github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/endure/v2"
+	goridgeRpc "github.com/roadrunner-server/goridge/v4/pkg/rpc"
 	"github.com/roadrunner-server/resetter/v6"
 	rpcPlugin "github.com/roadrunner-server/rpc/v6"
 	"github.com/roadrunner-server/server/v6"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"golang.org/x/net/http2"
 )
 
 func TestResetterInit(t *testing.T) {
@@ -98,23 +94,24 @@ func TestResetterInit(t *testing.T) {
 }
 
 func resetterRPCTest(t *testing.T) {
-	httpc := &http.Client{
-		Timeout: 30 * time.Second,
-		Transport: &http2.Transport{
-			AllowHTTP: true,
-			DialTLSContext: func(ctx context.Context, network, addr string, _ *tls.Config) (net.Conn, error) {
-				return (&net.Dialer{Timeout: 30 * time.Second}).DialContext(ctx, network, addr)
-			},
-		},
-	}
-	client := resetterV1connect.NewResetterServiceClient(httpc, "http://127.0.0.1:6001")
-	ctx := t.Context()
+	conn, err := (&net.Dialer{}).DialContext(t.Context(), "tcp", "127.0.0.1:6001")
+	require.NoError(t, err)
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+	defer func() { _ = client.Close() }()
 
-	resetResp, err := client.Reset(ctx, connect.NewRequest(&resetterV1.ResetRequest{Plugin: "resetter.plugin1"}))
+	var resetResp resetterV1.Response
+	err = client.Call("resetter.Reset", &resetterV1.ResetRequest{Plugin: "resetter.plugin1"}, &resetResp)
 	assert.NoError(t, err)
-	assert.True(t, resetResp.Msg.GetOk())
+	assert.True(t, resetResp.GetOk())
 
-	listResp, err := client.ListPlugins(ctx, connect.NewRequest(&resetterV1.ListPluginsRequest{}))
+	// negative path: unknown plugin name must surface as an error over goridge net/rpc
+	var missingResp resetterV1.Response
+	err = client.Call("resetter.Reset", &resetterV1.ResetRequest{Plugin: "resetter.unknown"}, &missingResp)
+	require.ErrorContains(t, err, "no such plugin")
+	assert.False(t, missingResp.GetOk())
+
+	var listResp resetterV1.PluginsList
+	err = client.Call("resetter.ListPlugins", &resetterV1.ListPluginsRequest{}, &listResp)
 	assert.NoError(t, err)
-	require.Contains(t, listResp.Msg.GetPlugins(), "resetter.plugin1")
+	require.Contains(t, listResp.GetPlugins(), "resetter.plugin1")
 }
