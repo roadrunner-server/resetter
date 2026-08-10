@@ -9,4 +9,4 @@ require (
 	github.com/roadrunner-server/endure/v2 v2.6.2
 )
 
-require google.golang.org/protobuf v1.36.11 // indirect
+require google.golang.org/protobuf v1.36.12 // indirect
