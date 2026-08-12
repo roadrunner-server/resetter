@@ -13,7 +13,6 @@ import (
 
 	mocklogger "tests/mock"
 
-	resetterV1 "github.com/roadrunner-server/api-go/v6/resetter/v1"
 	"github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/endure/v2"
 	goridgeRpc "github.com/roadrunner-server/goridge/v4/pkg/rpc"
@@ -99,19 +98,19 @@ func resetterRPCTest(t *testing.T) {
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	defer func() { _ = client.Close() }()
 
-	var resetResp resetterV1.Response
-	err = client.Call("resetter.Reset", &resetterV1.ResetRequest{Plugin: "resetter.plugin1"}, &resetResp)
+	var done bool
+	err = client.Call("resetter.Reset", "resetter.plugin1", &done)
 	assert.NoError(t, err)
-	assert.True(t, resetResp.GetOk())
+	assert.True(t, done)
 
 	// negative path: unknown plugin name must surface as an error over goridge net/rpc
-	var missingResp resetterV1.Response
-	err = client.Call("resetter.Reset", &resetterV1.ResetRequest{Plugin: "resetter.unknown"}, &missingResp)
+	var missing bool
+	err = client.Call("resetter.Reset", "resetter.unknown", &missing)
 	require.ErrorContains(t, err, "no such plugin")
-	assert.False(t, missingResp.GetOk())
+	assert.False(t, missing)
 
-	var listResp resetterV1.PluginsList
-	err = client.Call("resetter.ListPlugins", &resetterV1.ListPluginsRequest{}, &listResp)
+	var services []string
+	err = client.Call("resetter.List", nil, &services)
 	assert.NoError(t, err)
-	require.Contains(t, listResp.GetPlugins(), "resetter.plugin1")
+	require.Contains(t, services, "resetter.plugin1")
 }
