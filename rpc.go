@@ -3,10 +3,6 @@ package resetter
 import (
 	"errors"
 	"fmt"
-	"maps"
-	"slices"
-
-	resetterV1 "github.com/roadrunner-server/api-go/v6/resetter/v1"
 )
 
 var errNoSuchPlugin = errors.New("no such plugin")
@@ -15,20 +11,31 @@ type rpc struct {
 	srv *Plugin
 }
 
-func (r *rpc) ListPlugins(_ *resetterV1.ListPluginsRequest, out *resetterV1.PluginsList) error {
-	out.Plugins = slices.Collect(maps.Keys(r.srv.registry))
+// List all resettable plugins.
+func (r *rpc) List(_ bool, list *[]string) error {
+	*list = make([]string, 0, len(r.srv.registry))
+
+	for name := range r.srv.registry {
+		*list = append(*list, name)
+	}
+
 	return nil
 }
 
-func (r *rpc) Reset(in *resetterV1.ResetRequest, out *resetterV1.Response) error {
-	name := in.GetPlugin()
-	svc, ok := r.srv.registry[name]
+// Reset named plugin.
+func (r *rpc) Reset(service string, done *bool) error {
+	svc, ok := r.srv.registry[service]
 	if !ok {
-		return fmt.Errorf("%w: %s", errNoSuchPlugin, name)
+		*done = false
+		return fmt.Errorf("%w: %s", errNoSuchPlugin, service)
 	}
+
 	if err := svc.Reset(); err != nil {
+		*done = false
 		return err
 	}
-	out.Ok = true
+
+	*done = true
+
 	return nil
 }
