@@ -30,12 +30,8 @@ func (r *rpc) Reset(service string, done *bool) error {
 		return fmt.Errorf("%w: %s", errNoSuchPlugin, service)
 	}
 
-	if err := svc.Reset(); err != nil {
-		*done = false
-		return err
-	}
+	err := svc.Reset()
+	*done = err == nil
 
-	*done = true
-
-	return nil
+	return err
 }
